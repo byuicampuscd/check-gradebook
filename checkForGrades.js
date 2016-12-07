@@ -30,9 +30,7 @@ function* run() {
     });
     yield nightmare
         .goto('https://byui.brightspace.com/d2l/login?noredirect=1')
-        .type("#userName", authData.username)
-        .type("#password", authData.password)
-        .click("a.vui-button-primary")
+        //NIGHTMARE WAITS FOR USER TO LOG-IN MANUALLY
         .wait(function () {
             //go to d2l home
             console.log("Waiting");
