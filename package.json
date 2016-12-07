@@ -1,0 +1,26 @@
+{
+  "name": "check-gradebook",
+  "version": "1.0.0",
+  "description": "Tool to check gradebook for grade associations",
+  "main": "checkForGrades.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/byuicampuscd/check-gradebook.git"
+  },
+  "author": "Didymus Benson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/byuicampuscd/check-gradebook/issues"
+  },
+  "homepage": "https://github.com/byuicampuscd/check-gradebook#readme",
+  "dependencies": {
+    "d3-dsv": "^1.0.3",
+    "nightmare": "^2.8.1",
+    "nightmare-helpers": "git+https://github.com/byuicampuscd/nightmare-helpers.git",
+    "nightmare-xpath": "^2.0.2",
+    "vo": "^4.0.2"
+  }
+}

@@ -7,15 +7,17 @@ var Nightmare = require('nightmare'),
     fs = require("fs");
 var vo = require('vo');
 require("nightmare-xpath");
+var d3 = require('d3-dsv');
 var orgUnits = ["64229", "10011"]; //Diddy's sandbox, JAM's sandbox
 var authData = JSON.parse(fs.readFileSync("./auth.json"));
 var selector = '#z_b'
-var results[];
+
 vo(run)(function (err, result) {
     if (err) throw err
 })
 
 function* run() {
+    var results = [];
     //SPAWN NIGHTMARE, LOG IN, GET TO HOME PAGE
     var nightmare = Nightmare({
         show: true,
@@ -56,8 +58,10 @@ function* run() {
                 };
             })
         console.log("Found %d Grade Associations", associations.length, "in Unit", unit);
-        results.push("Found %d Grade Associations", associations.length, "in Unit", unit);
-        console.log(results);
+        results.push({unit: unit, associations: associations.length});
+
     }
     yield nightmare.end()
+
+    fs.writeFile("results.csv", d3.csvFormat(results) , function(err){if (err) throw err});
 }
