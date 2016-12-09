@@ -16,7 +16,7 @@ vo(run)(function (err, result) {
     if (err) throw err
 })
 
-function* run() {
+function * run() {
     var results = [];
     //SPAWN NIGHTMARE, LOG IN, GET TO HOME PAGE
     var nightmare = Nightmare({
@@ -96,39 +96,41 @@ function* run() {
     //GO CHECK THE COURSES
     for (var i = 0; i < orgUnits.length; i++) {
         var unit = orgUnits[i];
-         var associations = [];
-        var totalgrades = [];
-        yield nightmare
+        var associations = yield nightmare
             .goto("https://byui.brightspace.com/d2l/lms/grades/admin/manage/gradeslist.d2l?ou=" + unit)
             .wait(function (unit) {
                 console.log("Waiting");
                 return document.location.href === "https://byui.brightspace.com/d2l/lms/grades/admin/manage/gradeslist.d2l?ou=" + unit;
             }, unit)
             .wait('#z_b') //Wait for the grade-item table to load
-            .evaluate(function () {
-                return document.evaluate("//img[contains(@alt, 'Association Information')]",document,null, XPathResult.ANY_TYPE, null);
-            })
-            .then(function (result) {
-                console.log(result);
-                associations = result;
-                console.log(associations);
-            })
-            .then(function () {
-                return nightmare.evaluate(function () {
-                    return document.evaluate("//input[@class='d_chb' and contains(@title, 'Select') ]",document,null, XPathResult.ANY_TYPE, null);
-                })
-            })
-            .then(function (results) {
-                console.log(results);
-                totalgrades = results;
-                console.log(totalgrades);
-            })
+            .xpath("//img[contains(@alt, 'Association Information')]", function (node) {
+                return {
+                    href: node.href,
+                    innerText: node.innerText
+                };
+            });
+        if (associations){
+        var unassociated = yield nightmare
+            .wait(function (unit) {
+                console.log("Waiting");
+                return document.location.href === "https://byui.brightspace.com/d2l/lms/grades/admin/manage/gradeslist.d2l?ou=" + unit;
+            }, unit)
+            .wait('#z_b') //Wait for the grade-item table to load
+            .xpath("//td[3][contains(@class, 'd_gc') ]", function (node) {
+                return {
+                    href: node.href,
+                    innerText: node.innerText
+                };
+            });
+        }
 
-        console.log("Found %d Grade Associations", associations.length, "out of", totalgrades.length, "grade items in Unit", unit);
+        console.log("Found %d Grade Associations", associations.length, "and", unassociated.length, "unnassociated grade items in Unit", unit);
 
         results.push({
             unit: unit,
-            associations: associations.length
+            associations: associations.length,
+            unassociated: unassociated.length,
+            total: associations.length + unassociated.length
         });
     }
     yield nightmare.end()
@@ -138,16 +140,11 @@ function* run() {
     });
 }
 
-// .xpath("//img[contains(@alt, 'Association Information')]", function (node) {
-//                return {
-//                    href: node.href,
-//                    innerText: node.innerText
-//                };
-//            })
-//        var totalgrades = yield nightmare
-//            .xpath("//input[@class='d_chb' and contains(@title, 'Select) ]", function (node) {
-//                return {
-//                    href: node.href,
-//                    innerText: node.innerText
-//                };
-//            })
+/*
+GETS THE AMOUNT OF UNASSOCIATED GRADE ITEMS
+"//td[3][contains(@class, 'd_gc') ]"
+GETS THE AMOUNT OF ASSOCIATED GRADE ITEMS
+"//img[contains(@alt, 'Association Information')]"
+*/
+
+
