@@ -10,10 +10,8 @@
     "type": "git",
     "url": "git+https://github.com/byuicampuscd/check-gradebook.git"
   },
-  "author": "Didymus Benson",
-  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/byuicampuscd/check-gradebook/issues"
+  "url": "https://github.com/byuicampuscd/check-gradebook/issues"
   },
   "homepage": "https://github.com/byuicampuscd/check-gradebook#readme",
   "dependencies": {
@@ -22,5 +20,7 @@
     "nightmare-helpers": "git+https://github.com/byuicampuscd/nightmare-helpers.git",
     "nightmare-xpath": "^2.0.2",
     "vo": "^4.0.2"
-  }
+  },
+  "author": "Didymus Benson",
+  "license": "MIT"
 }
